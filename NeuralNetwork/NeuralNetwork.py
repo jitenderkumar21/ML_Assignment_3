@@ -24,7 +24,7 @@ class MLP():
         
         return para
 
-    def __init__(self, inputs,outputs,layers_n, activ_arr, learning_rate = 2):
+    def __init__(self, inputs,outputs,layers_n, activ_arr, learning_rate = 0.5):
         '''
         :inputs: inputs to the layer
         :activ_arr: activation for each layer
@@ -65,8 +65,8 @@ class MLP():
         A.append(A_curr)
 
         #for digits dataset uncomment this code
-        s = self.softmax(A_curr)
-        A.append(s)
+        # s = self.softmax(A_curr)
+        # A.append(s)
 
         #Uncomment this for binary classification only
         # s = self.sigmoid_here(A_curr)[0]
@@ -106,9 +106,6 @@ class MLP():
     
         return ret, cache
 
-
-    # def log_softmax(self,y):
-    #     return(log_softmax(y))
 
     def predict(self, X):
         '''
@@ -154,21 +151,21 @@ class MLP():
             AL = self.forward(X)
 
             # Uncomment this for digits dataset
-            y_pred = AL[-2]
+            # y_pred = AL[-2]
 
             # Uncomment this for boston dataset
-            # y_pred = AL[-1]
+            y_pred = AL[-1]
 
             loss = grad_cost(y_pred,y)
             curr_cache = self.caches[-1]
 
-            A_prev , Weights, bias = curr_cache
-            n_features = A_prev.shape[1] 
+            A_prev , W, bias = curr_cache
+            n = A_prev.shape[1] 
             
             # findiing gradients for parameter updates
-            dW = (1/n_features)*np.dot(A_prev.T,loss)
-            db = (1/n_features)*np.sum(loss,axis=0,keepdims=True)
-            dA_prev = np.dot(loss,Weights.T)
+            dW = (1/n)*np.dot(A_prev.T,loss)
+            db = (1/n)*np.sum(loss,axis=0,keepdims=True)
+            dA_prev = np.dot(loss,W.T)
     
             # updating parameters using gradients
             self.para["W"+str((len(self.para)//2))]-= self.learning_rate*dW
